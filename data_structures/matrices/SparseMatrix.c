@@ -54,10 +54,63 @@ void Display(struct Sparse s)
     }
 }
 
+struct Sparse *Add(struct Sparse *s1, struct Sparse *s2)
+{
+    int i, j, k;
+    i = j = k = 0;
+
+    struct Sparse *sum;
+
+    sum = (struct Sparse *)malloc(sizeof(struct Sparse));
+    sum->e = (struct Element *)malloc(sizeof(struct Element) * (s1->num + s2->num));
+
+    while (i < s1->num && j < s2->num)
+    {
+        if (s1->e[i].i < s2->e[j].i)
+            sum->e[k++] = s1->e[i++];
+        else if (s1->e[i].i > s2->e[j].i)
+            sum->e[k++] = s2->e[j++];
+        else
+        {
+            if (s1->e[i].j < s2->e[j].j)
+                sum->e[k++] = s1->e[i++];
+            else if (s1->e[i].j > s2->e[j].j)
+                sum->e[k++] = s2->e[j++];
+            else
+            {
+                sum->e[k] = s1->e[i++];
+                sum->e[k++].x += s2->e[j++].x;
+            }
+        }
+    }
+
+    for (; i < s1->num; i++)
+        sum->e[k++] = s1->e[i++];
+    for (; j < s2->num; j++)
+        sum->e[k++] = s2->e[j++];
+
+    sum->m = s1->m;
+    sum->n = s1->n;
+    sum->num = k;
+
+    return sum;
+}
+
 void main()
 {
-    struct Sparse s;
+    struct Sparse s1, s2, *s3;
 
-    Create(&s);
-    Display(s);
+    Create(&s1);
+    Create(&s2);
+
+    s3 = Add(&s1, &s2);
+
+    printf("Matrix: s1\n");
+    Display(s1);
+
+    printf("Matrix: s2\n");
+    Display(s2);
+
+    printf("Matrix: s3\n");
+    Display(*s3);
 }
