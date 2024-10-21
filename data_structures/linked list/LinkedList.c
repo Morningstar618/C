@@ -6,11 +6,11 @@ struct Node
 {
     int data;
     struct Node *next;
-} *first = NULL; // declaring and defining the 'first' node pointer
+} *first, *last = NULL; // declaring and defining the 'first' node pointer
 
 void Create(int A[], int n)
 {
-    struct Node *t, *last;
+    struct Node *t;
 
     first = (struct Node *)malloc(sizeof(struct Node));
     first->data = A[0];
@@ -33,7 +33,7 @@ void Display(struct Node *p)
 {
     while (p != NULL)
     {
-        printf("%p - %d\n", p, p->data);
+        printf("%p->%d, ", p, p->data);
         p = p->next;
     }
 
@@ -132,9 +132,89 @@ struct Node *Search(struct Node *p, int key)
     return NULL;
 }
 
+// NOTE: "first" and "p" are two different pointers with the same address and
+// not same pointers with same address
+void Insert(struct Node *p, int index, int x)
+{
+    if (index < 0 || index > Count(p))
+    {
+        printf("Please enter a valid index\n");
+        return;
+    }
+
+    struct Node *t;
+
+    t = (struct Node *)malloc(sizeof(struct Node));
+    t->data = x;
+
+    if (index == 0)
+    {
+        t->next = first;
+        first = t;
+    }
+    else if (index > 0)
+    {
+        for (int i = 0; i < index - 1 && p; i++)
+            p = p->next;
+
+        if (p)
+        {
+            t->next = p->next;
+            p->next = t;
+        }
+    }
+}
+
+void InsertAtLast(int x)
+{
+    struct Node *t = (struct Node *)malloc(sizeof(struct Node));
+
+    t->data = x;
+    t->next = NULL;
+
+    if (first == NULL)
+        first = last = t;
+    else
+    {
+        last->next = t;
+        last = t;
+    }
+}
+
+void SortedInsert(struct Node *p, int x)
+{
+    struct Node *t, *q = NULL;
+
+    t = (struct Node *)malloc(sizeof(struct Node));
+    t->data = x;
+    t->next = NULL;
+
+    if (first == NULL)
+        first = t;
+    else
+    {
+        while (p && p->data < x)
+        {
+            q = p;
+            p = p->next;
+        }
+
+        if (p == first)
+        {
+            t->next = first;
+            first = t;
+        }
+        else
+        {
+            t->next = q->next;
+            q->next = t;
+        }
+    }
+}
+
 void main()
 {
-    int A[] = {2, 4, 1, 8, 9, 10};
+    int A[] = {10, 20, 30};
 
-    Create(A, 6); // Populating the linked list 'first' by the data inside the array
+    Create(A, 3); // Populating the linked list 'first' by the data inside the array
 }
