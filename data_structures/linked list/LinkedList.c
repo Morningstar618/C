@@ -132,8 +132,11 @@ struct Node *Search(struct Node *p, int key)
     return NULL;
 }
 
-// NOTE: "first" and "p" are two different pointers with the same address and
-// not same pointers with same address
+// NOTE: at times, when modifying the first node, we should directly use the
+// "first" pointer instead of pointer "p" as the latter exists only inside
+// the function scope and causes some issues when modifying the first node
+// directly via it. But the latter can be used to modify any other node via it
+// as then it's just a pointer to access and operate over that node.
 void Insert(struct Node *p, int index, int x)
 {
     if (index < 0 || index > Count(p))
@@ -212,9 +215,107 @@ void SortedInsert(struct Node *p, int x)
     }
 }
 
+int Delete(struct Node *p, int index)
+{
+    if (index < 0 || index > Count(p))
+    {
+        printf("Enter valid index\n");
+        return -1;
+    }
+
+    struct Node *q = NULL;
+    int x;
+
+    if (index == 0)
+    {
+        q = first;
+        x = first->data;
+        first = first->next;
+
+        free(q);
+
+        return x;
+    }
+    else
+    {
+        for (int i = 0; i < index; i++)
+        {
+            q = p;
+            p = p->next;
+        }
+
+        q->next = p->next;
+        x = p->data;
+        free(p);
+
+        return x;
+    }
+}
+
+int IsSorted(struct Node *p)
+{
+    int x = INT_MIN;
+
+    while (p != NULL)
+    {
+        if (x > p->data)
+            return 0;
+
+        x = p->data;
+        p = p->next;
+    }
+
+    return 1;
+}
+
+void RemoveDuplicateValues(struct Node *p)
+{
+    struct Node *q = p->next;
+
+    while (q != NULL)
+    {
+        if (p->data != q->data)
+        {
+            p = q;
+            q = q->next;
+        }
+        else
+        {
+            p->next = q->next;
+            free(q);
+            q = p->next;
+        }
+    }
+}
+
+// Using 'sliding pointers'
+void ReverseLinkedList(struct Node *p)
+{
+    struct Node *q, *r;
+    q = NULL;
+    r = NULL;
+
+    while (p != NULL)
+    {
+        r = q;
+        q = p;
+        p = p->next;
+
+        q->next = r;
+    }
+
+    last = first;
+    first = q;
+}
+
 void main()
 {
-    int A[] = {10, 20, 30};
+    int A[] = {10, 20, 30, 40, 50, 60};
 
-    Create(A, 3); // Populating the linked list 'first' by the data inside the array
+    Create(A, 6); // Populating the linked list 'first' by the data inside the array
+
+    ReverseLinkedList(first);
+    Display(first);
+
+    printf("%d\n", last->data);
 }
