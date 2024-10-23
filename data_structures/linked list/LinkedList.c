@@ -6,17 +6,17 @@ struct Node
 {
     int data;
     struct Node *next;
-} *first, *last = NULL; // declaring and defining the 'first' node pointer
+} *first, *last = NULL; // declaring and defining node pointers
 
-void Create(int A[], int n)
+struct Node *Create(int A[], int n)
 {
-    struct Node *t;
+    struct Node *p, *t;
 
-    first = (struct Node *)malloc(sizeof(struct Node));
-    first->data = A[0];
-    first->next = NULL;
+    p = (struct Node *)malloc(sizeof(struct Node));
+    p->data = A[0];
+    p->next = NULL;
 
-    last = first;
+    last = p;
 
     for (int i = 1; i < n; i++)
     {
@@ -27,6 +27,8 @@ void Create(int A[], int n)
         last->next = t;
         last = t;
     }
+
+    return p;
 }
 
 void Display(struct Node *p)
@@ -308,14 +310,76 @@ void ReverseLinkedList(struct Node *p)
     first = q;
 }
 
+struct Node *Concat(struct Node *p, struct Node *q)
+{
+    struct Node *t;
+
+    t = (struct Node *)malloc(sizeof(struct Node));
+    t = p;
+    while (p->next != NULL)
+        p = p->next;
+
+    p->next = q;
+
+    return t;
+}
+
+struct Node *Merge(struct Node *p, struct Node *q)
+{
+    struct Node *third, *last;
+
+    if (p->data < q->data)
+    {
+        third = p;
+        last = p;
+
+        p = p->next;
+        last->next = NULL;
+    }
+    else
+    {
+        third = q;
+        last = q;
+
+        q = q->next;
+        last->next = NULL;
+    }
+
+    while (p != NULL && q != NULL)
+    {
+        if (p->data < q->data)
+        {
+            last->next = p;
+            last = p;
+            p = p->next;
+
+            last->next = NULL;
+        }
+        else
+        {
+            last->next = q;
+            last = q;
+            q = q->next;
+            last->next = NULL;
+        }
+    }
+
+    if (p != NULL)
+        last->next = p;
+    else
+        last->next = q;
+
+    return third;
+}
+
 void main()
 {
     int A[] = {10, 20, 30, 40, 50, 60};
+    int B[] = {11, 18, 23, 43, 56};
 
-    Create(A, 6); // Populating the linked list 'first' by the data inside the array
+    first = Create(A, 6); // Populating the linked list 'first' by the data inside the array
+    struct Node *second = Create(B, 5);
 
-    ReverseLinkedList(first);
-    Display(first);
-
-    printf("%d\n", last->data);
+    struct Node *test = Merge(first, second);
+    Display(test);
 }
