@@ -59,15 +59,3 @@ void Display()
 
     printf("\n");
 }
-
-void main()
-{
-    Enqueue(21);
-    Enqueue(20);
-    Enqueue(18);
-    Enqueue(15);
-
-    printf("Deleted: %d\n", Dequeue());
-
-    Display();
-}

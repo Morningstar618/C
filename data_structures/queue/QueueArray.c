@@ -73,19 +73,3 @@ void Display(struct Queue q)
 
     printf("\n");
 }
-
-int main()
-{
-    struct Queue q;
-    Create(&q);
-
-    Enqueue(&q, 45);
-    Enqueue(&q, 33);
-    Enqueue(&q, 65);
-
-    Dequeue(&q);
-
-    Display(q);
-
-    return 0;
-}
