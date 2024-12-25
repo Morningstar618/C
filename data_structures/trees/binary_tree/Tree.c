@@ -79,9 +79,86 @@ void Postorder(struct Node *p)
     }
 }
 
+void LevelOrder(struct Node *p)
+{
+    struct Queue q;
+    CreateQueue(&q, 100);
+
+    printf("%d ", p->data);
+    Enqueue(&q, p);
+
+    while (!IsEmpty(q))
+    {
+        p = Dequeue(&q);
+
+        if (p->lchild)
+        {
+            printf("%d ", p->lchild->data);
+            Enqueue(&q, p->lchild);
+
+        }
+
+        if (p->rchild)
+        {
+            printf("%d ", p->rchild->data);
+            Enqueue(&q, p->rchild);
+        }
+    }
+
+    printf("\n");
+}
+
+int Count(struct Node *p)
+{
+    if (p != NULL)
+    {
+        int x = Count(p->lchild);
+        int y = Count(p->rchild);
+
+        return x + y + 1;
+    }
+
+    return 0;
+}
+
+int SumData(struct Node *p)
+{
+    if (p != NULL)
+    {
+        int x = SumData(p->lchild);
+        int y = SumData(p->rchild);
+
+        return x + y + p->data;
+    }
+
+    return 0;
+}
+
+int HeightTree(struct Node *p)
+{
+    int x=0, y=0;
+
+    if (p == 0)
+        return 0;
+
+    x = HeightTree(p->lchild);
+    y = HeightTree(p->rchild);
+
+    if (x > y)
+        return x + 1;
+    else
+        return y + 1;
+}
+
 void main()
 {
     CreateTree();
 
-    Preorder(root);
+    LevelOrder(root);
+
+    printf("Nodes: %d\n", Count(root));
+
+    printf("Sum: %d\n", SumData(root));
+
+    printf("Height: %d\n", HeightTree(root));
 }
